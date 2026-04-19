@@ -164,7 +164,7 @@ function getLogoHtml() {
     if (!logoBase64) {
         return '';
     }
-    return `<img src="${logoBase64}" alt="School Logo" style="height: 70px; width: auto;">`;
+    return `<img src="${logoBase64}" alt="School Logo" style="height: 98px; width: auto;">`;
 }
 
 // ===== DATA STORAGE =====
@@ -388,36 +388,37 @@ function buildReportHtml(report) {
     const results = calculateResults(report.subjects);
     const { average, gradeLetter, gradeDescription } = results;
     let reportHtml = `
-        <div class="report-card" id="reportCard" style="background: white; padding: 15px; border-radius: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: Arial, sans-serif; max-width: 900px; margin-left: auto; margin-right: auto; line-height: 1.5; width: 100%;">
-            <div style="text-align: center; border-bottom: 2px solid #2e7d32; margin-bottom: 8px; padding-bottom: 8px;">
-                <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 6px;">
+        <div class="report-card" id="reportCard" style="background: white; padding: 21px; border-radius: 16px; margin-top: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.14); font-family: Arial, sans-serif; max-width: 820px; margin-left: auto; margin-right: auto; line-height: 1.45; width: 100%;">
+            <header style="text-align: center; border-bottom: 4px solid #2e7d32; margin-bottom: 12px; padding-bottom: 12px;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 10px; flex-wrap: wrap;">
                     ${getLogoHtml()}
                     <div>
-                        <h2 style="color: #2e7d32; margin: 0; font-size: 18px;">HIGH GRADE MONTESSORI SCHOOL</h2>
-                        <div style="font-style: italic; color: #DAA520; font-size: 11px;">\"Nothing But The Best!\"</div>
+                        <h2 style="color: #2e7d32; margin: 0; font-size: 26px; line-height: 1.1;">HIGH GRADE MONTESSORI SCHOOL</h2>
+                        <div style="font-style: italic; color: #DAA520; font-size: 16px; margin-top: 4px;">\"Nothing But The Best!\"</div>
                     </div>
                 </div>
-                <p style="font-size: 8px; margin: 2px 0;">House No. 111, Bia Street, New Ashongman Estate | P.O. Box 3981, Kaneshie, Accra | 📞 +233 2775 87829</p>
-                <h3 style="margin: 6px 0 0; color: #333; font-size: 14px;">ACADEMIC REPORT CARD</h3>
-            </div>
-            <div style="background: #f8f9fa; padding: 10px; border-radius: 7px; margin: 10px 0; display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 10px; font-size: 10px;">
+                <p style="font-size: 12px; margin: 4px 0; letter-spacing: 0.02em;">House No. 111, Bia Street, New Ashongman Estate | P.O. Box 3981, Kaneshie, Accra | 📞 +233 2775 87829</p>
+                <h3 style="margin: 10px 0 0; color: #333; font-size: 22px;">ACADEMIC REPORT CARD</h3>
+            </header>
+            <section class="section" style="background: #f8f9fa; padding: 14px; border-radius: 12px; margin: 18px 0; display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 14px; font-size: 14px;">
                 <div><strong>Name:</strong> ${report.studentName}</div>
                 <div><strong>Class:</strong> ${report.studentClass}</div>
                 <div><strong>Term:</strong> ${report.trimester}</div>
                 <div><strong>Year:</strong> ${report.academicYear}</div>
-            </div>
-            <table style="width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 10px;">
-                <thead>
-                    <tr style="background: #2e7d32; color: white;">
-                        <th style="padding: 8px 6px; text-align: left; border: 1px solid #ddd; font-size: 9px;">Subject</th>
-                        <th style="padding: 8px 6px; text-align: center; border: 1px solid #ddd; font-size: 9px;">CA</th>
-                        <th style="padding: 8px 6px; text-align: center; border: 1px solid #ddd; font-size: 9px;">Exam</th>
-                        <th style="padding: 8px 6px; text-align: center; border: 1px solid #ddd; font-size: 9px;">Total</th>
-                        <th style="padding: 8px 6px; text-align: center; border: 1px solid #ddd; font-size: 9px;">Grade</th>
-                        <th style="padding: 8px 6px; text-align: left; border: 1px solid #ddd; font-size: 9px;">Remark</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+            </section>
+            <section class="section">
+                <table style="width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px;">
+                    <thead>
+                        <tr style="background: #2e7d32; color: white;">
+                            <th style="padding: 12px 10px; text-align: left; border: 1px solid #ddd; font-size: 14px;">Subject</th>
+                            <th style="padding: 12px 10px; text-align: center; border: 1px solid #ddd; font-size: 14px;">CA</th>
+                            <th style="padding: 12px 10px; text-align: center; border: 1px solid #ddd; font-size: 14px;">Exam</th>
+                            <th style="padding: 12px 10px; text-align: center; border: 1px solid #ddd; font-size: 14px;">Total</th>
+                            <th style="padding: 12px 10px; text-align: center; border: 1px solid #ddd; font-size: 14px;">Grade</th>
+                            <th style="padding: 12px 10px; text-align: left; border: 1px solid #ddd; font-size: 14px;">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
 
     report.subjects.forEach(subject => {
         const grade = getGradeLetter(subject.total);
@@ -425,12 +426,12 @@ function buildReportHtml(report) {
         const remark = getGradeDescription(grade);
         reportHtml += `
             <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 6px 4px; border: 1px solid #ddd; font-weight: 600; font-size: 9px;">${subject.name}</td>
-                <td style="padding: 6px 4px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 9px;">${subject.ca}</td>
-                <td style="padding: 6px 4px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 9px;">${subject.exam}</td>
-                <td style="padding: 6px 4px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 9px;">${subject.total}</td>
-                <td style="padding: 6px 4px; border: 1px solid #ddd; text-align: center;"><span style="background: ${gradeColor}; color: white; padding: 3px 6px; border-radius: 10px; font-weight: bold; font-size: 8px;">${grade}</span></td>
-                <td style="padding: 6px 4px; border: 1px solid #ddd; font-size: 9px;">${remark}</td>
+                <td style="padding: 12px 10px; border: 1px solid #ddd; font-weight: 600; font-size: 14px;">${subject.name}</td>
+                <td style="padding: 12px 10px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 14px;">${subject.ca}</td>
+                <td style="padding: 12px 10px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 14px;">${subject.exam}</td>
+                <td style="padding: 12px 10px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 14px;">${subject.total}</td>
+                <td style="padding: 12px 10px; border: 1px solid #ddd; text-align: center;"><span style="background: ${gradeColor}; color: white; padding: 4px 10px; border-radius: 18px; font-weight: bold; font-size: 13px;">${grade}</span></td>
+                <td style="padding: 12px 10px; border: 1px solid #ddd; font-size: 14px;">${remark}</td>
             </tr>`;
     });
 
@@ -438,21 +439,22 @@ function buildReportHtml(report) {
                 </tbody>
                 <tfoot>
                     <tr style="background: #f0f0f0; font-weight: bold;">
-                        <td colspan="2" style="padding: 6px 4px; border: 1px solid #ddd; font-size: 9px;">Overall Average</td>
-                        <td colspan="4" style="padding: 6px 4px; border: 1px solid #ddd; text-align: center; font-size: 9px;">${average.toFixed(1)}% - ${gradeLetter} (${gradeDescription})</td>
+                        <td colspan="2" style="padding: 12px 10px; border: 1px solid #ddd; font-size: 14px;">Overall Average</td>
+                        <td colspan="4" style="padding: 12px 10px; border: 1px solid #ddd; text-align: center; font-size: 14px;">${average.toFixed(1)}% - ${gradeLetter} (${gradeDescription})</td>
                     </tr>
                 </tfoot>
             </table>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 0; font-size: 9px;">
-                <div style="background: #f8f9fa; padding: 6px; border-radius: 5px; border-left: 2px solid #2e7d32;"><strong>Attitude:</strong> ${report.attitude}</div>
-                <div style="background: #fff8e1; padding: 6px; border-radius: 5px; border-left: 2px solid #ff9800;"><strong>Grade:</strong> ${gradeLetter} - ${gradeDescription}</div>
-            </div>
-            <div style="background: #f8f9fa; padding: 6px; border-radius: 5px; margin: 6px 0; font-size: 9px; border-left: 2px solid #DAA520;"><strong>Comments:</strong> "${report.teacherComments}"</div>
-            <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #ddd; font-size: 10px;">
-                <div style="text-align: center; width: 45%;"><div style="border-top: 1px solid #333; padding-top: 5px; margin-top: 9px; font-size: 9px;">${report.teacherName}</div><div style="font-weight: bold; margin-top: 4px;">Teacher</div></div>
-                <div style="text-align: center; width: 45%;"><div style="border-top: 1px solid #333; padding-top: 5px; margin-top: 9px; font-size: 9px;">_________________</div><div style="font-weight: bold; margin-top: 4px;">Principal</div></div>
-            </div>
-            <div style="text-align: center; margin-top: 9px; font-size: 8px; color: #666; border-top: 1px solid #ddd; padding-top: 7px;"><p style="margin: 2px 0;">Generated: ${new Date().toLocaleDateString()} | High Grade Montessori - \"Nothing But The Best!\"</p></div>
+            </section>
+            <section class="section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; font-size: 14px;">
+                <div style="background: #f8f9fa; padding: 12px; border-radius: 10px; border-left: 4px solid #2e7d32;"><strong>Attitude:</strong> ${report.attitude}</div>
+                <div style="background: #fff8e1; padding: 12px; border-radius: 10px; border-left: 4px solid #ff9800;"><strong>Grade:</strong> ${gradeLetter} - ${gradeDescription}</div>
+            </section>
+            <section class="section" style="background: #f8f9fa; padding: 14px; border-radius: 10px; margin: 14px 0; font-size: 14px; border-left: 4px solid #DAA520;"><strong>Comments:</strong> "${report.teacherComments}"</section>
+            <footer style="display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 16px; gap: 10px; flex-wrap: wrap;">
+                <div style="text-align: center; width: 45%; min-width: 180px;"><div style="border-top: 1px solid #333; padding-top: 8px; margin-top: 14px; font-size: 14px;">${report.teacherName}</div><div style="font-weight: bold; margin-top: 6px; font-size: 14px;">Teacher</div></div>
+                <div style="text-align: center; width: 45%; min-width: 180px;"><div style="border-top: 1px solid #333; padding-top: 8px; margin-top: 14px; font-size: 14px;">_________________</div><div style="font-weight: bold; margin-top: 6px; font-size: 14px;">Principal</div></div>
+            </footer>
+            <div style="text-align: center; margin-top: 14px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 12px;"><p style="margin: 4px 0;">Generated: ${new Date().toLocaleDateString()} | High Grade Montessori - \"Nothing But The Best!\"</p></div>
         </div>`;
     return reportHtml;
 }
@@ -472,36 +474,37 @@ function generateReport() {
     const { average, gradeLetter, gradeDescription } = results;
     
     let reportHtml = `
-        <div class="report-card" id="reportCard" style="background: white; padding: 15px 15px 16px; border-radius: 10px; margin-top: 10px; box-shadow: 0 5px 14px rgba(0,0,0,0.18); font-family: Arial, sans-serif; max-width: 960px; margin-left: auto; margin-right: auto; line-height: 1.6; width: 100%;">
-            <div style="text-align: center; border-bottom: 2px solid #2e7d32; margin-bottom: 10px; padding-bottom: 10px;">
-                <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 8px; flex-wrap: wrap;">
+        <div class="report-card" id="reportCard" style="background: white; padding: 21px 21px 24px; border-radius: 16px; margin-top: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.16); font-family: Arial, sans-serif; max-width: 820px; margin-left: auto; margin-right: auto; line-height: 1.45; width: 100%;">
+            <header style="text-align: center; border-bottom: 4px solid #2e7d32; margin-bottom: 14px; padding-bottom: 14px;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 12px; flex-wrap: wrap;">
                     ${getLogoHtml()}
-                    <div style="max-width: 620px;">
-                        <h2 style="color: #2e7d32; margin: 0; font-size: 20px; line-height: 1.05;">HIGH GRADE MONTESSORI SCHOOL</h2>
-                        <div style="font-style: italic; color: #DAA520; font-size: 12px; margin-top: 3px;">"Nothing But The Best!"</div>
+                    <div style="max-width: 520px;">
+                        <h2 style="color: #2e7d32; margin: 0; font-size: 26px; line-height: 1.1;">HIGH GRADE MONTESSORI SCHOOL</h2>
+                        <div style="font-style: italic; color: #DAA520; font-size: 16px; margin-top: 4px;">"Nothing But The Best!"</div>
                     </div>
                 </div>
-                <p style="font-size: 9px; margin: 3px 0; letter-spacing: 0.02em;">House No. 111, Bia Street, New Ashongman Estate | P.O. Box 3981, Kaneshie, Accra | 📞 +233 2775 87829</p>
-                <h3 style="margin: 7px 0 0; color: #333; font-size: 16px;">ACADEMIC REPORT CARD</h3>
-            </div>
-            <div style="background: #f8f9fa; padding: 9px; border-radius: 7px; margin: 10px 0; display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 9px; font-size: 10px;">
+                <p style="font-size: 12px; margin: 4px 0; letter-spacing: 0.02em;">House No. 111, Bia Street, New Ashongman Estate | P.O. Box 3981, Kaneshie, Accra | 📞 +233 2775 87829</p>
+                <h3 style="margin: 12px 0 0; color: #333; font-size: 22px;">ACADEMIC REPORT CARD</h3>
+            </header>
+            <section class="section" style="background: #f8f9fa; padding: 14px; border-radius: 12px; margin: 18px 0; display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 14px; font-size: 14px;">
                 <div><strong>Name:</strong> ${studentName}</div>
                 <div><strong>Class:</strong> ${studentClass}</div>
                 <div><strong>Term:</strong> ${trimester}</div>
                 <div><strong>Year:</strong> ${academicYear}</div>
-            </div>
-            <table style="width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 10px;">
-                <thead>
-                    <tr style="background: #2e7d32; color: white;">
-                        <th style="padding: 8px 6px; text-align: left; border: 1px solid #ddd; font-size: 9px;">Subject</th>
-                        <th style="padding: 8px 6px; text-align: center; border: 1px solid #ddd; font-size: 9px;">CA</th>
-                        <th style="padding: 8px 6px; text-align: center; border: 1px solid #ddd; font-size: 9px;">Exam</th>
-                        <th style="padding: 8px 6px; text-align: center; border: 1px solid #ddd; font-size: 9px;">Total</th>
-                        <th style="padding: 8px 6px; text-align: center; border: 1px solid #ddd; font-size: 9px;">Grade</th>
-                        <th style="padding: 8px 6px; text-align: left; border: 1px solid #ddd; font-size: 9px;">Remark</th>
-                    </tr>
-                </thead>
-                <tbody>
+            </section>
+            <section class="section">
+                <table style="width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px;">
+                    <thead>
+                        <tr style="background: #2e7d32; color: white;">
+                            <th style="padding: 12px 10px; text-align: left; border: 1px solid #ddd; font-size: 14px;">Subject</th>
+                            <th style="padding: 12px 10px; text-align: center; border: 1px solid #ddd; font-size: 14px;">CA</th>
+                            <th style="padding: 12px 10px; text-align: center; border: 1px solid #ddd; font-size: 14px;">Exam</th>
+                            <th style="padding: 12px 10px; text-align: center; border: 1px solid #ddd; font-size: 14px;">Total</th>
+                            <th style="padding: 12px 10px; text-align: center; border: 1px solid #ddd; font-size: 14px;">Grade</th>
+                            <th style="padding: 12px 10px; text-align: left; border: 1px solid #ddd; font-size: 14px;">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
     `;
     
     subjects.forEach(subject => {
@@ -511,12 +514,12 @@ function generateReport() {
 
         reportHtml += `
             <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 7px 6px; border: 1px solid #ddd; font-weight: 600; font-size: 10px;">${subject.name}</td>
-                <td style="padding: 7px 6px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 10px;">${subject.ca}</td>
-                <td style="padding: 7px 6px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 10px;">${subject.exam}</td>
-                <td style="padding: 7px 6px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 10px;">${subject.total}</td>
-                <td style="padding: 7px 6px; border: 1px solid #ddd; text-align: center;"><span style="background: ${gradeColor}; color: white; padding: 4px 8px; border-radius: 11px; font-weight: bold; font-size: 9px;">${grade}</span></td>
-                <td style="padding: 7px 6px; border: 1px solid #ddd; font-size: 10px;">${remark}</td>
+                <td style="padding: 14px 12px; border: 1px solid #ddd; font-weight: 600; font-size: 20px;">${subject.name}</td>
+                <td style="padding: 14px 12px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 20px;">${subject.ca}</td>
+                <td style="padding: 14px 12px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 20px;">${subject.exam}</td>
+                <td style="padding: 14px 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 20px;">${subject.total}</td>
+                <td style="padding: 14px 12px; border: 1px solid #ddd; text-align: center;"><span style="background: ${gradeColor}; color: white; padding: 8px 16px; border-radius: 22px; font-weight: bold; font-size: 18px;">${grade}</span></td>
+                <td style="padding: 14px 12px; border: 1px solid #ddd; font-size: 20px;">${remark}</td>
             </tr>
         `;
     });
@@ -525,28 +528,28 @@ function generateReport() {
                 </tbody>
                 <tfoot>
                     <tr style="background: #f0f0f0; font-weight: bold;">
-                        <td colspan="2" style="padding: 8px 6px; border: 1px solid #ddd; font-size: 10px;">Overall Average</td>
-                        <td colspan="4" style="padding: 8px 6px; border: 1px solid #ddd; text-align: center; font-size: 10px;">${average.toFixed(1)}% - ${gradeLetter} (${gradeDescription})</td>
+                        <td colspan="2" style="padding: 12px 10px; border: 1px solid #ddd; font-size: 14px;">Overall Average</td>
+                        <td colspan="4" style="padding: 12px 10px; border: 1px solid #ddd; text-align: center; font-size: 14px;">${average.toFixed(1)}% - ${gradeLetter} (${gradeDescription})</td>
                     </tr>
                 </tfoot>
             </table>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 9px 0; font-size: 10px;">
-                <div style="background: #f8f9fa; padding: 8px; border-radius: 6px; border-left: 2px solid #2e7d32;"><strong>Attitude:</strong> ${attitude}</div>
-                <div style="background: #fff8e1; padding: 8px; border-radius: 6px; border-left: 2px solid #ff9800;"><strong>Grade:</strong> ${gradeLetter} - ${gradeDescription}</div>
-            </div>
-            <div style="background: #f8f9fa; padding: 8px; border-radius: 6px; margin: 9px 0; font-size: 10px; border-left: 2px solid #DAA520;"><strong>Comments:</strong> "${teacherComments}"</div>
-            <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #ddd; font-size: 10px;">
-                <div style="text-align: center; width: 45%;">
-                    <div style="border-top: 1px solid #333; padding-top: 5px; margin-top: 9px; font-size: 9px;">${teacherName}</div>
-                    <div style="font-weight: bold; margin-top: 4px;">Teacher</div>
+            <section class="section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; font-size: 14px;">
+                <div style="background: #f8f9fa; padding: 14px; border-radius: 12px; border-left: 4px solid #2e7d32;"><strong>Attitude:</strong> ${attitude}</div>
+                <div style="background: #fff8e1; padding: 14px; border-radius: 12px; border-left: 4px solid #ff9800;"><strong>Grade:</strong> ${gradeLetter} - ${gradeDescription}</div>
+            </section>
+            <section class="section" style="background: #f8f9fa; padding: 14px; border-radius: 12px; margin: 16px 0; font-size: 14px; border-left: 4px solid #DAA520;"><strong>Comments:</strong> "${teacherComments}"</section>
+            <footer style="display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 16px; gap: 10px; flex-wrap: wrap;">
+                <div style="text-align: center; width: 45%; min-width: 180px;">
+                    <div style="border-top: 1px solid #333; padding-top: 8px; margin-top: 14px; font-size: 14px;">${teacherName}</div>
+                    <div style="font-weight: bold; margin-top: 6px; font-size: 14px;">Teacher</div>
                 </div>
-                <div style="text-align: center; width: 45%;">
-                    <div style="border-top: 1px solid #333; padding-top: 5px; margin-top: 9px; font-size: 9px;">_________________</div>
-                    <div style="font-weight: bold; margin-top: 4px;">Principal</div>
+                <div style="text-align: center; width: 45%; min-width: 180px;">
+                    <div style="border-top: 1px solid #333; padding-top: 8px; margin-top: 14px; font-size: 14px;">_________________</div>
+                    <div style="font-weight: bold; margin-top: 6px; font-size: 14px;">Principal</div>
                 </div>
-            </div>
-            <div style="text-align: center; margin-top: 9px; font-size: 8px; color: #666; border-top: 1px solid #ddd; padding-top: 7px;">
-                <p style="margin: 2px 0;">Generated: ${new Date().toLocaleDateString()} | High Grade Montessori - "Nothing But The Best!"</p>
+            </footer>
+            <div style="text-align: center; margin-top: 14px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 12px;">
+                <p style="margin: 4px 0;">Generated: ${new Date().toLocaleDateString()} | High Grade Montessori - "Nothing But The Best!"</p>
             </div>
         </div>
     `;
@@ -770,9 +773,16 @@ async function downloadSavedReportPDF(id) {
     const fileName = `HighGrade_${report.studentName.replace(/\s+/g, '_')}_${report.studentClass.replace(/\s+/g, '_')}_${report.trimester.replace(/\s+/g, '_')}.pdf`;
     showToast('⏳ Generating PDF report... Please wait', 'info', 2000);
 
-    // Create HTML element from report data
     const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'fixed';
+    tempDiv.style.left = '-10000px';
+    tempDiv.style.top = '0';
+    tempDiv.style.width = '210mm';
+    tempDiv.style.visibility = 'hidden';
+    tempDiv.style.pointerEvents = 'none';
     tempDiv.innerHTML = buildReportHtml(report);
+    document.body.appendChild(tempDiv);
+
     const reportElement = tempDiv.querySelector('#reportCard');
 
     try {
@@ -781,6 +791,10 @@ async function downloadSavedReportPDF(id) {
     } catch (error) {
         console.error('PDF generation error:', error);
         showToast('❌ Error generating PDF. Please try again.', 'error');
+    } finally {
+        if (tempDiv.parentNode) {
+            document.body.removeChild(tempDiv);
+        }
     }
 }
 
@@ -790,31 +804,23 @@ async function exportElementAsPDF(reportElement, fileName) {
     }
 
     const canvas = await window.html2canvas(reportElement, {
-        scale: 4,
+        scale: 2,
         useCORS: true,
-        logging: false
+        logging: false,
+        scrollY: -window.scrollY
     });
 
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = pageWidth;
+    const imgData = canvas.toDataURL('image/jpeg', 0.7);
+    const pdf = new jspdf.jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+    });
+    const imgWidth = 210;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-    }
-
+    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
     pdf.save(fileName);
 }
 
@@ -825,26 +831,51 @@ async function downloadBatchPDFs() {
         return;
     }
 
-    showToast('⏳ Generating batch PDFs... please wait', 'info', 4000);
-    const zip = new JSZip();
+    showToast('⏳ Generating batch PDF... please wait', 'info', 4000);
+    const pdf = new jspdf.jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+    });
 
     try {
-        for (const report of reports) {
-            const fileName = `HighGrade_${report.studentName.replace(/\s+/g, '_')}_${report.studentClass.replace(/\s+/g, '_')}_${report.trimester.replace(/\s+/g, '_')}.pdf`;
+        for (let i = 0; i < reports.length; i++) {
+            const report = reports[i];
             
-            // Create HTML element from report data
             const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'fixed';
+            tempDiv.style.left = '-10000px';
+            tempDiv.style.top = '0';
+            tempDiv.style.width = '210mm';
+            tempDiv.style.visibility = 'hidden';
+            tempDiv.style.pointerEvents = 'none';
             tempDiv.innerHTML = buildReportHtml(report);
+            document.body.appendChild(tempDiv);
+
             const reportElement = tempDiv.querySelector('#reportCard');
-            
-            // Generate PDF blob
-            const pdfBlob = await generatePDFBlob(reportElement);
-            zip.file(fileName, pdfBlob);
+            const canvas = await window.html2canvas(reportElement, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                scrollY: -window.scrollY
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 0.7);
+            const imgWidth = 210;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            if (i !== 0) pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+
+            if (tempDiv.parentNode) {
+                document.body.removeChild(tempDiv);
+            }
         }
 
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        saveAs(zipBlob, `HighGrade_BatchReports_${new Date().toISOString().slice(0,10)}.zip`);
-        showToast('✅ Batch PDFs zip downloaded successfully!', 'success', 4000);
+        const fileName = `HighGrade_BatchReports_${new Date().toISOString().slice(0,10)}.pdf`;
+        pdf.save(fileName);
+        showToast('✅ Batch PDF downloaded successfully!', 'success', 4000);
     } catch (error) {
         console.error('Batch PDF generation failed:', error);
         showToast('❌ Batch PDF generation failed.', 'error');
@@ -853,31 +884,23 @@ async function downloadBatchPDFs() {
 
 async function generatePDFBlob(reportElement) {
     const canvas = await window.html2canvas(reportElement, {
-        scale: 4,
+        scale: 2,
         useCORS: true,
-        logging: false
+        logging: false,
+        scrollY: -window.scrollY
     });
 
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = pageWidth;
+    const imgData = canvas.toDataURL('image/jpeg', 0.7);
+    const pdf = new jspdf.jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+    });
+    const imgWidth = 210;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-    }
-
+    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
     return pdf.output('blob');
 }
 
