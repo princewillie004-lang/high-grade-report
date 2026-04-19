@@ -388,7 +388,7 @@ function buildReportHtml(report) {
     const results = calculateResults(report.subjects);
     const { average, gradeLetter, gradeDescription } = results;
     let reportHtml = `
-        <div class="report-card" id="reportCard" style="background: white; padding: 21px; border-radius: 16px; margin-top: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.14); font-family: Arial, sans-serif; max-width: 820px; margin-left: auto; margin-right: auto; line-height: 1.45; width: 100%;">
+        <div class="report-card reportCard" id="reportCard" style="background: white; padding: 21px; border-radius: 16px; margin-top: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.14); font-family: Arial, sans-serif; max-width: 820px; margin-left: auto; margin-right: auto; line-height: 1.45; width: 100%;">
             <header style="text-align: center; border-bottom: 4px solid #2e7d32; margin-bottom: 12px; padding-bottom: 12px;">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 10px; flex-wrap: wrap;">
                     ${getLogoHtml()}
@@ -474,7 +474,7 @@ function generateReport() {
     const { average, gradeLetter, gradeDescription } = results;
     
     let reportHtml = `
-        <div class="report-card" id="reportCard" style="background: white; padding: 21px 21px 24px; border-radius: 16px; margin-top: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.16); font-family: Arial, sans-serif; max-width: 820px; margin-left: auto; margin-right: auto; line-height: 1.45; width: 100%;">
+        <div class="report-card reportCard" id="reportCard" style="background: white; padding: 21px 21px 24px; border-radius: 16px; margin-top: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.16); font-family: Arial, sans-serif; max-width: 820px; margin-left: auto; margin-right: auto; line-height: 1.45; width: 100%;">
             <header style="text-align: center; border-bottom: 4px solid #2e7d32; margin-bottom: 14px; padding-bottom: 14px;">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 12px; flex-wrap: wrap;">
                     ${getLogoHtml()}
@@ -775,15 +775,21 @@ async function downloadSavedReportPDF(id) {
 
     const tempDiv = document.createElement('div');
     tempDiv.style.position = 'fixed';
-    tempDiv.style.left = '-10000px';
+    tempDiv.style.left = '0';
     tempDiv.style.top = '0';
     tempDiv.style.width = '210mm';
-    tempDiv.style.visibility = 'hidden';
+    tempDiv.style.opacity = '0';
     tempDiv.style.pointerEvents = 'none';
+    tempDiv.style.zIndex = '-1';
     tempDiv.innerHTML = buildReportHtml(report);
     document.body.appendChild(tempDiv);
 
     const reportElement = tempDiv.querySelector('#reportCard');
+    if (reportElement) {
+        reportElement.style.display = 'block';
+        reportElement.scrollIntoView();
+    }
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     try {
         await exportElementAsPDF(reportElement, fileName);
@@ -807,7 +813,10 @@ async function exportElementAsPDF(reportElement, fileName) {
         scale: 2,
         useCORS: true,
         logging: false,
-        scrollY: -window.scrollY
+        backgroundColor: '#ffffff',
+        scrollY: -window.scrollY,
+        windowWidth: document.body.scrollWidth,
+        windowHeight: document.body.scrollHeight
     });
 
     const imgData = canvas.toDataURL('image/jpeg', 0.7);
@@ -845,20 +854,30 @@ async function downloadBatchPDFs() {
             
             const tempDiv = document.createElement('div');
             tempDiv.style.position = 'fixed';
-            tempDiv.style.left = '-10000px';
+            tempDiv.style.left = '0';
             tempDiv.style.top = '0';
             tempDiv.style.width = '210mm';
-            tempDiv.style.visibility = 'hidden';
+            tempDiv.style.opacity = '0';
             tempDiv.style.pointerEvents = 'none';
+            tempDiv.style.zIndex = '-1';
             tempDiv.innerHTML = buildReportHtml(report);
             document.body.appendChild(tempDiv);
 
             const reportElement = tempDiv.querySelector('#reportCard');
+            if (reportElement) {
+                reportElement.style.display = 'block';
+                reportElement.scrollIntoView();
+            }
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             const canvas = await window.html2canvas(reportElement, {
                 scale: 2,
                 useCORS: true,
                 logging: false,
-                scrollY: -window.scrollY
+                backgroundColor: '#ffffff',
+                scrollY: -window.scrollY,
+                windowWidth: document.body.scrollWidth,
+                windowHeight: document.body.scrollHeight
             });
 
             const imgData = canvas.toDataURL('image/jpeg', 0.7);
@@ -887,7 +906,10 @@ async function generatePDFBlob(reportElement) {
         scale: 2,
         useCORS: true,
         logging: false,
-        scrollY: -window.scrollY
+        backgroundColor: '#ffffff',
+        scrollY: -window.scrollY,
+        windowWidth: document.body.scrollWidth,
+        windowHeight: document.body.scrollHeight
     });
 
     const imgData = canvas.toDataURL('image/jpeg', 0.7);
@@ -1151,6 +1173,115 @@ function addTestStudents() {
     showToast(`✅ Added ${testStudents.length} test students!`, 'success');
 }
 
+function addTestReports() {
+    const testReports = [
+        {
+            id: Date.now() + 1,
+            studentName: 'John Doe',
+            studentClass: 'Primary 1',
+            trimester: 'First Term',
+            academicYear: '2024-2025',
+            attitude: 'Excellent',
+            teacherName: 'Mrs. Ama Sarpong',
+            teacherComments: 'John is an excellent student with outstanding performance. He shows great initiative and participates actively in class discussions.',
+            subjects: [
+                { name: 'Mathematics', ca: 42, exam: 38, total: 80 },
+                { name: 'English', ca: 45, exam: 40, total: 85 },
+                { name: 'Science', ca: 40, exam: 36, total: 76 },
+                { name: 'Social Studies', ca: 44, exam: 39, total: 83 }
+            ],
+            average: 81,
+            grade: 'A',
+            dateSaved: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 2,
+            studentName: 'Jane Smith',
+            studentClass: 'Primary 2',
+            trimester: 'First Term',
+            academicYear: '2024-2025',
+            attitude: 'Good',
+            teacherName: 'Mr. Kwaku Mensah',
+            teacherComments: 'Jane demonstrates consistent effort and improvement. She is a dedicated learner who respects class rules.',
+            subjects: [
+                { name: 'Mathematics', ca: 38, exam: 35, total: 73 },
+                { name: 'English', ca: 40, exam: 38, total: 78 },
+                { name: 'Science', ca: 36, exam: 33, total: 69 },
+                { name: 'Social Studies', ca: 39, exam: 37, total: 76 }
+            ],
+            average: 74,
+            grade: 'B',
+            dateSaved: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 3,
+            studentName: 'Michael Johnson',
+            studentClass: 'JHS 1',
+            trimester: 'First Term',
+            academicYear: '2024-2025',
+            attitude: 'Excellent',
+            teacherName: 'Prof. Kofi Mensah',
+            teacherComments: 'Michael is an exemplary student with exceptional performance across all subjects. Leadership qualities evident.',
+            subjects: [
+                { name: 'English Language', ca: 44, exam: 41, total: 85 },
+                { name: 'Mathematics', ca: 45, exam: 42, total: 87 },
+                { name: 'Integrated Science', ca: 43, exam: 40, total: 83 },
+                { name: 'Social Studies', ca: 42, exam: 39, total: 81 },
+                { name: 'French', ca: 40, exam: 37, total: 77 },
+                { name: 'RME', ca: 46, exam: 44, total: 90 }
+            ],
+            average: 84,
+            grade: 'A',
+            dateSaved: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 4,
+            studentName: 'Sarah Williams',
+            studentClass: 'JHS 2',
+            trimester: 'First Term',
+            academicYear: '2024-2025',
+            attitude: 'Satisfactory',
+            teacherName: 'Mrs. Aba Osei',
+            teacherComments: 'Sarah shows average performance. She needs to focus more on Mathematics and improve class participation.',
+            subjects: [
+                { name: 'English Language', ca: 35, exam: 32, total: 67 },
+                { name: 'Mathematics', ca: 30, exam: 28, total: 58 },
+                { name: 'Integrated Science', ca: 34, exam: 31, total: 65 },
+                { name: 'Social Studies', ca: 36, exam: 33, total: 69 },
+                { name: 'French', ca: 32, exam: 29, total: 61 },
+                { name: 'RME', ca: 38, exam: 35, total: 73 }
+            ],
+            average: 66,
+            grade: 'C',
+            dateSaved: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 5,
+            studentName: 'David Brown',
+            studentClass: 'Primary 3',
+            trimester: 'First Term',
+            academicYear: '2024-2025',
+            attitude: 'Good',
+            teacherName: 'Miss Abena Boateng',
+            teacherComments: 'David is a well-behaved student with good academic progress. He is making steady improvements.',
+            subjects: [
+                { name: 'Mathematics', ca: 41, exam: 37, total: 78 },
+                { name: 'English', ca: 42, exam: 39, total: 81 },
+                { name: 'Science', ca: 39, exam: 35, total: 74 },
+                { name: 'Social Studies', ca: 40, exam: 38, total: 78 }
+            ],
+            average: 78,
+            grade: 'B',
+            dateSaved: new Date().toISOString()
+        }
+    ];
+
+    allReports.push(...testReports);
+    localStorage.setItem('highGradeReports', JSON.stringify(allReports));
+    displaySavedReports();
+    showToast(`✅ Added ${testReports.length} test reports!`, 'success');
+}
+
 function clearStudentDatabase() {
     if (studentDatabase.length === 0) {
         showToast('❌ Database is already empty!', 'error');
@@ -1164,6 +1295,8 @@ function clearStudentDatabase() {
         showToast('🗑️ Student database cleared successfully!', 'success');
     }
 }
+
+
 
 // Initialize on page load
 if (document.readyState === 'loading') {

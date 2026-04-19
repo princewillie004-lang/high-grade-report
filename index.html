@@ -364,7 +364,8 @@
         }
 
         /* Report Card PDF Styles */
-        #reportCard {
+        #reportCard,
+        .reportCard {
             width: 210mm;
             min-height: 297mm;
             padding: 15mm;
@@ -1338,9 +1339,7 @@
                 <span class="search-icon">🔍</span>
             </div>
             <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                <button onclick="exportAllData()" class="btn-modern" style="background: linear-gradient(135deg, #9C27B0 0%, #E91E63 100%);">💿 Export All Data</button>
-                <button onclick="importData()" class="btn-modern" style="background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);">📥 Import Data</button>
-                <button onclick="clearAllData()" class="btn-modern" style="background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);">🗑️ Clear All Data</button>
+                <button onclick="addTestReports()" class="btn-modern" style="background: linear-gradient(135deg, #FF6B9D 0%, #FF1E75 100%); color: white;">🧪 Add Test Reports</button>
             </div>
             <div id="studentList"></div>
         </div>
