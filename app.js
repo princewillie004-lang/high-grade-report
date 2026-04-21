@@ -715,34 +715,150 @@ function displaySavedReports() {
         return;
     }
 
-    let listHtml = '<div style="max-height: 500px; overflow-y: auto;">';
+    let listHtml = '';
     reports.slice().reverse().forEach(report => {
         const gradeColor = getGradeColor(report.grade);
         listHtml += `
-            <div class="report-item" style="border-left: 4px solid ${gradeColor};">
-                <div style="flex: 1;">
-                    <strong style="font-size: 16px; color: var(--text-dark);">${report.studentName}</strong><br>
-                    <span style="color: var(--text-light); font-size: 14px;">
-                        ${report.studentClass} | ${report.trimester} | Grade:
-                        <span style="background: ${gradeColor}; color: white; padding: 2px 8px; border-radius: 12px; font-weight: bold;">
-                            ${report.grade}
-                        </span>
-                    </span><br>
-                    <small style="color: #999;">Saved: ${new Date(report.dateSaved).toLocaleDateString()}</small>
-                </div>
+            <div class="report-card" style="background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); border-left: 4px solid ${gradeColor};">
+                <h3 style="margin: 0 0 10px 0; font-size: 18px; color: var(--text-dark);">${report.studentName}</h3>
+                <p style="margin: 0 0 10px 0; color: var(--text-light); font-size: 14px;">
+                    ${report.studentClass} | ${report.trimester} | Grade:
+                    <span style="background: ${gradeColor}; color: white; padding: 2px 8px; border-radius: 12px; font-weight: bold;">
+                        ${report.grade}
+                    </span>
+                </p>
+                <small style="color: #999; display: block; margin-bottom: 10px;">Saved: ${new Date(report.dateSaved).toLocaleDateString()}</small>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button onclick="viewSavedReport(${report.id})" class="btn-modern" style="padding: 8px 12px; font-size: 14px; background: var(--school-blue);">👁️ View</button>
-                    <button onclick="downloadSavedReportPDF(${report.id})" class="btn-modern" style="padding: 8px 12px; font-size: 14px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white;">📥 PDF</button>
-                    <button onclick="deleteReport(${report.id})" class="btn-modern" style="padding: 8px 12px; font-size: 14px; background: var(--error);">🗑️ Delete</button>
+                    <button onclick="viewPDF(${report.id})" class="btn-modern" style="flex: 1; padding: 8px 12px; font-size: 14px; background: var(--school-blue);">👁️ View PDF</button>
+                    <button onclick="downloadSavedReportPDF(${report.id})" class="btn-modern" style="flex: 1; padding: 8px 12px; font-size: 14px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white;">📥 Download</button>
+                    <button onclick="deleteReport(${report.id})" class="btn-modern" style="flex: 1; padding: 8px 12px; font-size: 14px; background: var(--error);">🗑️ Delete</button>
                 </div>
             </div>`;
     });
-    listHtml += '</div>';
 
     document.getElementById('studentList').innerHTML = listHtml;
 }
 
-// ===== DOWNLOAD FUNCTIONS =====
+// Cache for generated PDFs
+const pdfCache = new Map();
+let currentReportId = null;
+
+async function getCachedPDF(reportId) {
+    if (pdfCache.has(reportId)) {
+        return pdfCache.get(reportId);
+    }
+    return null;
+}
+
+async function setCachedPDF(reportId, blob) {
+    pdfCache.set(reportId, blob);
+    // Optional: limit cache size
+    if (pdfCache.size > 10) {
+        const firstKey = pdfCache.keys().next().value;
+        pdfCache.delete(firstKey);
+    }
+}
+
+async function viewPDF(id) {
+    const report = allReports.find(r => r.id === id);
+    if (!report) {
+        showToast('❌ Report not found.', 'error');
+        return;
+    }
+
+    currentReportId = id;
+
+    // Check cache first
+    let blob = await getCachedPDF(id);
+    if (blob) {
+        const blobUrl = window.URL.createObjectURL(blob);
+        document.getElementById('pdfViewer').src = blobUrl;
+        document.getElementById('pdfModal').classList.remove('hidden');
+        return;
+    }
+
+    showToast('⏳ Generating PDF for viewing...', 'info', 2000);
+
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'fixed';
+    tempDiv.style.left = '0';
+    tempDiv.style.top = '0';
+    tempDiv.style.width = '210mm';
+    tempDiv.style.opacity = '0';
+    tempDiv.style.pointerEvents = 'none';
+    tempDiv.style.zIndex = '-1';
+    tempDiv.innerHTML = buildReportHtml(report);
+    document.body.appendChild(tempDiv);
+
+    const reportElement = tempDiv.querySelector('#reportCard');
+    if (reportElement) {
+        reportElement.style.display = 'block';
+        reportElement.scrollIntoView();
+    }
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    try {
+        const canvas = await window.html2canvas(reportElement, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            scrollY: -window.scrollY,
+            windowWidth: document.body.scrollWidth,
+            windowHeight: document.body.scrollHeight
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.7);
+        const pdf = new jspdf.jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
+        });
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        blob = pdf.output('blob');
+
+        // Cache the blob
+        await setCachedPDF(id, blob);
+
+        const blobUrl = window.URL.createObjectURL(blob);
+        document.getElementById('pdfViewer').src = blobUrl;
+
+        document.getElementById('pdfModal').classList.remove('hidden');
+    } catch (error) {
+        console.error('PDF generation error:', error);
+        showToast('❌ Error generating PDF for viewing.', 'error');
+    } finally {
+        if (tempDiv.parentNode) {
+            document.body.removeChild(tempDiv);
+        }
+    }
+}
+
+function closeModal() {
+    document.getElementById('pdfModal').classList.add('hidden');
+    if (document.getElementById('pdfViewer').src) {
+        window.URL.revokeObjectURL(document.getElementById('pdfViewer').src);
+    }
+}
+
+function downloadCurrentPDF() {
+    if (currentReportId) {
+        const blob = pdfCache.get(currentReportId);
+        if (blob) {
+            const a = document.createElement('a');
+            a.href = window.URL.createObjectURL(blob);
+            a.download = 'Report.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(a.href);
+        }
+    }
+}
 async function downloadPDF() {
     const reportElement = document.querySelector('#reportCard');
 
@@ -756,7 +872,37 @@ async function downloadPDF() {
     showToast('⏳ Generating PDF report... Please wait', 'info', 2000);
 
     try {
-        await exportElementAsPDF(reportElement, fileName);
+        const canvas = await window.html2canvas(reportElement, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            scrollY: -window.scrollY,
+            windowWidth: document.body.scrollWidth,
+            windowHeight: document.body.scrollHeight
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.7);
+        const pdf = new jspdf.jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
+        });
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        const blob = pdf.output('blob');
+
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(a.href);
+
         showToast(`✅ PDF report downloaded: ${fileName}`, 'success', 3000);
     } catch (error) {
         console.error('PDF generation error:', error);
@@ -792,7 +938,37 @@ async function downloadSavedReportPDF(id) {
     await new Promise(resolve => setTimeout(resolve, 500));
 
     try {
-        await exportElementAsPDF(reportElement, fileName);
+        const canvas = await window.html2canvas(reportElement, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            scrollY: -window.scrollY,
+            windowWidth: document.body.scrollWidth,
+            windowHeight: document.body.scrollHeight
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.7);
+        const pdf = new jspdf.jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
+        });
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        const blob = pdf.output('blob');
+
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(a.href);
+
         showToast(`✅ PDF report downloaded: ${fileName}`, 'success', 3000);
     } catch (error) {
         console.error('PDF generation error:', error);
@@ -804,35 +980,6 @@ async function downloadSavedReportPDF(id) {
     }
 }
 
-async function exportElementAsPDF(reportElement, fileName) {
-    if (!reportElement) {
-        throw new Error('Report element not found for PDF export.');
-    }
-
-    const canvas = await window.html2canvas(reportElement, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        scrollY: -window.scrollY,
-        windowWidth: document.body.scrollWidth,
-        windowHeight: document.body.scrollHeight
-    });
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.7);
-    const pdf = new jspdf.jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true
-    });
-    const imgWidth = 210;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-    pdf.save(fileName);
-}
-
 async function downloadBatchPDFs() {
     const reports = getTeacherContextReports();
     if (reports.length === 0) {
@@ -841,17 +988,13 @@ async function downloadBatchPDFs() {
     }
 
     showToast('⏳ Generating batch PDF... please wait', 'info', 4000);
-    const pdf = new jspdf.jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true
-    });
+    const zip = new JSZip();
 
     try {
         for (let i = 0; i < reports.length; i++) {
             const report = reports[i];
-            
+            const fileName = `HighGrade_${report.studentName.replace(/\s+/g, '_')}_${report.studentClass.replace(/\s+/g, '_')}_${report.trimester.replace(/\s+/g, '_')}.pdf`;
+
             const tempDiv = document.createElement('div');
             tempDiv.style.position = 'fixed';
             tempDiv.style.left = '0';
@@ -881,49 +1024,39 @@ async function downloadBatchPDFs() {
             });
 
             const imgData = canvas.toDataURL('image/jpeg', 0.7);
+            const pdf = new jspdf.jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+                compress: true
+            });
             const imgWidth = 210;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-            if (i !== 0) pdf.addPage();
             pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            const blob = pdf.output('blob');
+
+            zip.file(fileName, blob);
 
             if (tempDiv.parentNode) {
                 document.body.removeChild(tempDiv);
             }
         }
 
-        const fileName = `HighGrade_BatchReports_${new Date().toISOString().slice(0,10)}.pdf`;
-        pdf.save(fileName);
+        const content = await zip.generateAsync({ type: 'blob' });
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(content);
+        a.download = `HighGrade_BatchReports_${new Date().toISOString().slice(0,10)}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(a.href);
+
         showToast('✅ Batch PDF downloaded successfully!', 'success', 4000);
     } catch (error) {
         console.error('Batch PDF generation failed:', error);
         showToast('❌ Batch PDF generation failed.', 'error');
     }
-}
-
-async function generatePDFBlob(reportElement) {
-    const canvas = await window.html2canvas(reportElement, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        scrollY: -window.scrollY,
-        windowWidth: document.body.scrollWidth,
-        windowHeight: document.body.scrollHeight
-    });
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.7);
-    const pdf = new jspdf.jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true
-    });
-    const imgWidth = 210;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-    return pdf.output('blob');
 }
 
 // ===== DATA EXPORT/IMPORT =====
@@ -1280,6 +1413,21 @@ function addTestReports() {
     localStorage.setItem('highGradeReports', JSON.stringify(allReports));
     displaySavedReports();
     showToast(`✅ Added ${testReports.length} test reports!`, 'success');
+}
+
+function deleteTestReports() {
+    const testTeacherNames = ['Mrs. Ama Sarpong', 'Mr. Kwaku Mensah', 'Mrs. Akosua Boateng', 'Mrs. Aba Osei'];
+    const initialLength = allReports.length;
+    allReports = allReports.filter(report => !testTeacherNames.includes(report.teacherName));
+    const deletedCount = initialLength - allReports.length;
+    
+    if (deletedCount > 0) {
+        localStorage.setItem('highGradeReports', JSON.stringify(allReports));
+        displaySavedReports();
+        showToast(`🗑️ Deleted ${deletedCount} test reports!`, 'success');
+    } else {
+        showToast('❌ No test reports found to delete!', 'error');
+    }
 }
 
 function clearStudentDatabase() {

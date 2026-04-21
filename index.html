@@ -399,6 +399,96 @@
             margin-bottom: 5mm;
         }
 
+        /* Responsive grid for saved reports */
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 600px) {
+            .report-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 900px) {
+            .report-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Modal (PDF Viewer) */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal-content {
+            width: 95%;
+            height: 90%;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #pdfViewer {
+            flex: 1;
+            width: 100%;
+            border: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .actions {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 500px) {
+            h1, h2, h3 {
+                font-size: 18px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .modal-content {
+                width: 98%;
+                height: 95%;
+            }
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -1073,6 +1163,133 @@
                 width: 20%;
             }
         }
+
+        /* Mobile Responsiveness Enhancements */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .school-header {
+                padding: 15px;
+                text-align: center;
+            }
+
+            .school-name {
+                font-size: 1.5em;
+            }
+
+            .school-address {
+                font-size: 0.8em;
+            }
+
+            .form-section {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .form-section h2 {
+                font-size: 20px;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 16px; /* Prevent zoom on iOS */
+                min-height: 44px; /* Touch target size */
+            }
+
+            .report-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .report-card {
+                padding: 15px;
+            }
+
+            .report-card h3 {
+                font-size: 16px;
+            }
+
+            .report-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .report-actions .btn {
+                width: 100%;
+            }
+
+            #pdfModal {
+                padding: 10px;
+            }
+
+            #pdfModal .modal-content {
+                width: 95%;
+                height: 80vh;
+            }
+
+            #pdfViewer {
+                height: calc(100% - 60px);
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-actions .btn {
+                width: 100%;
+            }
+
+            .toast {
+                font-size: 14px;
+                padding: 12px 20px;
+                bottom: 20px;
+                left: 10px;
+                right: 10px;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .school-name {
+                font-size: 1.3em;
+            }
+
+            .form-section h2 {
+                font-size: 18px;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 10px 16px;
+            }
+
+            .report-card {
+                padding: 12px;
+            }
+
+            .subject-table {
+                font-size: 12px;
+            }
+
+            .subject-table th, .subject-table td {
+                padding: 6px 4px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1322,9 +1539,6 @@
         <div id="postGenerationButtons" style="display: none; text-align: center; margin: 30px 0; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
             <button onclick="downloadPDF()" class="btn-modern" style="background: var(--gradient-secondary); color: #1a472a;">📥 Download PDF</button>
             <button onclick="createNewReport()" class="btn-modern" style="background: linear-gradient(135deg, #9C27B0 0%, #E91E63 100%); color: white;">➕ Create New Report</button>
-            <button onclick="toggleDarkMode()" class="btn-modern" id="darkModeBtnPost">
-                <span id="darkModeIconPost">🌙</span> <span id="darkModeTextPost">Dark Mode</span>
-            </button>
         </div>
 
         <!-- Saved Reports -->
@@ -1340,8 +1554,20 @@
             </div>
             <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                 <button onclick="addTestReports()" class="btn-modern" style="background: linear-gradient(135deg, #FF6B9D 0%, #FF1E75 100%); color: white;">🧪 Add Test Reports</button>
+                <button onclick="deleteTestReports()" class="btn-modern" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white;">🗑️ Delete Test Reports</button>
             </div>
-            <div id="studentList"></div>
+            <div id="studentList" class="report-grid"></div>
+        </div>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div id="pdfModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">✖</button>
+            <iframe id="pdfViewer"></iframe>
+            <div class="actions">
+                <button onclick="downloadCurrentPDF()" class="btn-modern">📥 Download PDF</button>
+            </div>
         </div>
     </div>
 
