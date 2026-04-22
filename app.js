@@ -36,7 +36,7 @@ function getGradeColor(letter) {
 
 // ===== COMMENT SUGGESTIONS =====
 const defaultComments = [
-    // Positive comments
+    // Excellent Performance
     "Excellent performance! Keep up the great work.",
     "Outstanding academic achievement. A role model for peers.",
     "Remarkable improvement in all subjects. Very proud!",
@@ -52,22 +52,132 @@ const defaultComments = [
     "Consistently exceeds expectations in all areas.",
     "Shows maturity beyond their years in handling challenges.",
     "An inspiration to others with their positive outlook.",
-    // Slightly negative comments
+    "Exceptional grasp of concepts and exceptional performance.",
+    "Deserves commendation for outstanding academic prowess.",
+    "Intelligent, hardworking, and always prepared for lessons.",
+    "Demonstrates excellent logical reasoning abilities.",
+    "An exemplary student setting high standards for others.",
+    "Shows brilliant understanding of complex topics.",
+    "Consistently produces high-quality work.",
+    "Demonstrates exceptional attention to detail.",
+    "Shows remarkable progress throughout the term.",
+    "A highly motivated and focused learner.",
+    "Exhibits outstanding organizational and analytical skills.",
+    
+    // Very Good Performance
+    "Very good performance! Continue the excellent work.",
+    "Good academic achievement with consistent effort.",
+    "Shows good understanding of concepts and topics.",
+    "Demonstrates positive behavior and participation.",
+    "Good creative thinking and problem-solving approach.",
+    "Positive attitude towards learning and improvement.",
+    "Good collaboration with classmates.",
+    "Shows enthusiasm in learning new topics.",
+    "Maintains good standards in academic work.",
+    "Shows potential for further improvement.",
+    "Good progress in most subjects.",
+    "Demonstrates dedication to studies.",
+    "Very competent and capable learner.",
+    "Shows consistent and reliable performance.",
+    "Good grasp of subject matter.",
+    "Actively participates and engages well in class.",
+    "Shows good leadership potential.",
+    "Well-behaved and respectful student.",
+    "Produces neat and organized work.",
+    "Shows good mathematical/analytical skills.",
+    "Contributes meaningfully to class discussions.",
+    "A reliable and responsible student.",
+    
+    // Satisfactory Performance
+    "Satisfactory performance. Scope for improvement.",
     "Good progress, but needs to focus more on homework completion.",
     "Shows potential, but needs to improve time management skills.",
     "Satisfactory performance, but could participate more in class.",
     "Needs to work on consistency in academic performance.",
     "Good effort, but needs to improve organizational skills.",
     "Shows improvement, but needs to focus on weak subjects.",
-    "Needs to develop better study habits for better results.",
-    "Good attitude, but needs to improve concentration in class.",
-    "Shows promise, but needs to put in more effort consistently.",
-    "Needs to improve participation in group activities.",
     "Good foundation, but needs to build on strengths.",
     "Needs to work on completing assignments on time.",
+    "Shows promise, but needs to put in more effort consistently.",
+    "Good attitude, but needs to improve concentration in class.",
+    "Satisfactory work, but can do better with more focus.",
+    "Demonstrates understanding but inconsistently.",
+    "Participates adequately but could be more proactive.",
+    "Average performance with potential for growth.",
+    "Needs to develop better study techniques.",
+    "Should review weak areas more carefully.",
+    "Can improve by practicing more regularly.",
+    "Needs to ask for help when struggling.",
+    "Could benefit from more class participation.",
+    "Shows capability but lacks sustained effort.",
+    "Acceptable work with room for improvement.",
+    
+    // Needs Improvement
+    "Needs to work on consistency in academic performance.",
+    "Needs to develop better study habits for better results.",
     "Shows potential, but needs to improve self-discipline.",
     "Good progress, but needs to seek help when struggling.",
-    "Needs to improve listening skills during lessons."
+    "Needs to improve listening skills during lessons.",
+    "Needs to improve participation in class activities.",
+    "Needs to focus more on completing assignments on time.",
+    "Shows promise with more consistent effort required.",
+    "Needs to improve concentration during lessons.",
+    "Good foundation, but requires more dedication.",
+    "Needs to develop better organizational skills.",
+    "Needs to put in more effort to improve performance.",
+    "Should seek additional help in challenging subjects.",
+    "Requires more focus and commitment to studies.",
+    "Needs to manage time better for assignments.",
+    "Could benefit from regular revision.",
+    "Shows capability but needs more persistence.",
+    "Needs to be more attentive during lessons.",
+    "Should work on understanding fundamental concepts.",
+    "Requires encouragement to participate more actively.",
+    "Needs support to reach academic potential.",
+    "Shows inconsistency; needs to stabilize performance.",
+    "Needs to develop better problem-solving strategies.",
+    
+    // Requires Immediate Attention
+    "Needs immediate attention and improvement.",
+    "Requires extra support to improve academic performance.",
+    "Needs to improve focus and dedication towards studies.",
+    "Requires guidance to understand basic concepts.",
+    "Needs motivation and support from parents and teachers.",
+    "Requires regular supervision for assignment completion.",
+    "Needs to develop fundamental study habits.",
+    "Requires one-on-one support to improve performance.",
+    "Falling behind; needs urgent intervention and support.",
+    "Needs to be more serious about academic responsibilities.",
+    "Requires special attention and parental involvement.",
+    "Should focus on mastering basic concepts first.",
+    "Needs significant improvement to meet grade expectations.",
+    "Attendance and focus need immediate improvement.",
+    "Requires comprehensive support from school and home.",
+    
+    // Behavioral and Social Comments
+    "Demonstrates excellent behavior and respect towards others.",
+    "Well-behaved and sets a good example for peers.",
+    "Shows kindness and cooperation with classmates.",
+    "Respectful attitude towards teachers and school rules.",
+    "Positive influence on classroom environment.",
+    "Demonstrates empathy and understanding towards others.",
+    "Shows improvement in behavior and conduct.",
+    "Needs to improve behavior in classroom.",
+    "Could be more respectful of school rules.",
+    "Needs to work on social interactions with peers.",
+    "Should display more responsibility in class.",
+    "Demonstrates good sportsmanship and team spirit.",
+    
+    // Effort-based Comments
+    "Shows excellent effort and commitment to learning.",
+    "Puts in consistent effort despite challenges.",
+    "Great effort shown in difficult subjects.",
+    "Demonstrates determination and perseverance.",
+    "Could show more effort in daily work.",
+    "Effort needs to be more consistent.",
+    "Shows effort but results not matching.",
+    "Needs to apply more effort to homework.",
+    "Excellent work quality from consistent effort."
 ];
 
 // ===== UI UTILITIES =====
@@ -323,48 +433,76 @@ function saveTeacherNameForClass() {
 
 // ===== COMMENT MANAGEMENT =====
 function initializeCommentSuggestions() {
-    const select = document.getElementById('commentSuggestions');
-    const textarea = document.getElementById('teacherComments');
-    
-    // Load custom comments from localStorage
-    let customComments = JSON.parse(localStorage.getItem('customComments') || '[]');
-    
-    // Clear existing options except the first
-    select.innerHTML = '<option value="">-- Select a comment suggestion --</option>';
-    
-    // Add default comments
-    defaultComments.forEach(comment => {
-        const option = document.createElement('option');
-        option.value = comment;
-        option.textContent = comment;
-        select.appendChild(option);
-    });
-    
-    // Add custom comments
-    customComments.forEach(comment => {
-        const option = document.createElement('option');
-        option.value = comment;
-        option.textContent = comment + ' (Custom)';
-        select.appendChild(option);
-    });
-    
-    // Handle selection
-    select.addEventListener('change', function() {
-        if (this.value) {
-            textarea.value = this.value;
+    try {
+        let select = document.getElementById('commentSuggestions');
+        let textarea = document.getElementById('teacherComments') || document.getElementById('studentComments');
+
+        // If select is missing but textarea exists, create the select and insert it before the textarea
+        if (!select && textarea) {
+            select = document.createElement('select');
+            select.id = 'commentSuggestions';
+            select.style.marginBottom = '10px';
+            select.style.width = '100%';
+            select.style.padding = '10px';
+            select.style.border = '2px solid #ddd';
+            select.style.borderRadius = '8px';
+            select.style.fontSize = '14px';
+            const placeholderOpt = document.createElement('option');
+            placeholderOpt.value = '';
+            placeholderOpt.textContent = '-- Select a comment suggestion --';
+            select.appendChild(placeholderOpt);
+            textarea.parentNode.insertBefore(select, textarea);
         }
-    });
-    
-    // Save custom comments when textarea changes
-    textarea.addEventListener('input', function() {
-        const comment = this.value.trim();
-        if (comment && !defaultComments.includes(comment) && !customComments.includes(comment)) {
-            customComments.push(comment);
-            localStorage.setItem('customComments', JSON.stringify(customComments));
-            // Re-initialize to update the dropdown
-            initializeCommentSuggestions();
+
+        if (!select || !textarea) {
+            // Nothing to do if required elements are missing
+            console.warn('Comment suggestions: required elements missing (select or textarea)');
+            return;
         }
-    });
+
+        // Load custom comments from localStorage
+        let customComments = JSON.parse(localStorage.getItem('customComments') || '[]');
+
+        // Clear existing options and add placeholder
+        select.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '-- Select a comment suggestion --';
+        select.appendChild(placeholder);
+
+        // Add default comments
+        defaultComments.forEach(comment => {
+            const option = document.createElement('option');
+            option.value = comment;
+            option.textContent = comment;
+            select.appendChild(option);
+        });
+
+        // Add custom comments
+        customComments.forEach(comment => {
+            const option = document.createElement('option');
+            option.value = comment;
+            option.textContent = comment + ' (Custom)';
+            select.appendChild(option);
+        });
+
+        // Ensure single handlers
+        select.onchange = function() {
+            if (this.value) textarea.value = this.value;
+        };
+
+        textarea.oninput = function() {
+            const comment = this.value.trim();
+            if (comment && !defaultComments.includes(comment) && !customComments.includes(comment)) {
+                customComments.push(comment);
+                localStorage.setItem('customComments', JSON.stringify(customComments));
+                // Re-populate dropdown without causing duplicate listeners
+                initializeCommentSuggestions();
+            }
+        };
+    } catch (err) {
+        console.error('initializeCommentSuggestions error:', err);
+    }
 }
 
 // ===== REPORT FILTERING =====
@@ -771,9 +909,20 @@ async function viewPDF(id) {
     // Check cache first
     let blob = await getCachedPDF(id);
     if (blob) {
-        const blobUrl = window.URL.createObjectURL(blob);
-        document.getElementById('pdfViewer').src = blobUrl;
-        document.getElementById('pdfModal').classList.remove('hidden');
+        // Check if mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        
+        if (isMobile) {
+            // On mobile, open PDF in new tab for better compatibility
+            const blobUrl = window.URL.createObjectURL(blob);
+            window.open(blobUrl, '_blank');
+            showToast('📄 PDF opened in new tab', 'success', 2000);
+        } else {
+            // On desktop, use iframe viewer
+            const blobUrl = window.URL.createObjectURL(blob);
+            document.getElementById('pdfViewer').src = blobUrl;
+            document.getElementById('pdfModal').classList.remove('hidden');
+        }
         return;
     }
 
@@ -824,10 +973,20 @@ async function viewPDF(id) {
         // Cache the blob
         await setCachedPDF(id, blob);
 
-        const blobUrl = window.URL.createObjectURL(blob);
-        document.getElementById('pdfViewer').src = blobUrl;
-
-        document.getElementById('pdfModal').classList.remove('hidden');
+        // Check if mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        
+        if (isMobile) {
+            // On mobile, open PDF in new tab for better compatibility
+            const blobUrl = window.URL.createObjectURL(blob);
+            window.open(blobUrl, '_blank');
+            showToast('📄 PDF opened in new tab', 'success', 2000);
+        } else {
+            // On desktop, use iframe viewer
+            const blobUrl = window.URL.createObjectURL(blob);
+            document.getElementById('pdfViewer').src = blobUrl;
+            document.getElementById('pdfModal').classList.remove('hidden');
+        }
     } catch (error) {
         console.error('PDF generation error:', error);
         showToast('❌ Error generating PDF for viewing.', 'error');
@@ -988,12 +1147,18 @@ async function downloadBatchPDFs() {
     }
 
     showToast('⏳ Generating batch PDF... please wait', 'info', 4000);
-    const zip = new JSZip();
+
+    // Create a single PDF to hold all reports
+    const pdf = new jspdf.jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+    });
 
     try {
         for (let i = 0; i < reports.length; i++) {
             const report = reports[i];
-            const fileName = `HighGrade_${report.studentName.replace(/\s+/g, '_')}_${report.studentClass.replace(/\s+/g, '_')}_${report.trimester.replace(/\s+/g, '_')}.pdf`;
 
             const tempDiv = document.createElement('div');
             tempDiv.style.position = 'fixed';
@@ -1024,33 +1189,22 @@ async function downloadBatchPDFs() {
             });
 
             const imgData = canvas.toDataURL('image/jpeg', 0.7);
-            const pdf = new jspdf.jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-                compress: true
-            });
             const imgWidth = 210;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
+            // Add image to the single PDF
+            if (i > 0) {
+                pdf.addPage(); // Add new page for each report after the first
+            }
             pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-            const blob = pdf.output('blob');
-
-            zip.file(fileName, blob);
 
             if (tempDiv.parentNode) {
                 document.body.removeChild(tempDiv);
             }
         }
 
-        const content = await zip.generateAsync({ type: 'blob' });
-        const a = document.createElement('a');
-        a.href = window.URL.createObjectURL(content);
-        a.download = `HighGrade_BatchReports_${new Date().toISOString().slice(0,10)}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(a.href);
+        // Download the single combined PDF
+        pdf.save(`HighGrade_BatchReports_${new Date().toISOString().slice(0,10)}.pdf`);
 
         showToast('✅ Batch PDF downloaded successfully!', 'success', 4000);
     } catch (error) {
