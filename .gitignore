@@ -24,3 +24,8 @@ npm-debug.log*
 
 # Do NOT ignore: Picture3.png, app.js, index.html
 "@ | Out-File -FilePath .gitignore -Encoding utf8 -NoNewline
+# Empty placeholder from original archive
+app.js.backup
+
+# Empty placeholder from original archive
+app.js.backup
