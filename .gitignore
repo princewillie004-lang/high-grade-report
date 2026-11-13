@@ -1,0 +1,26 @@
+@"
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Build / deps (Phase 1+)
+node_modules/
+dist/
+.vite/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env
+.env
+.env.local
+
+# Do NOT ignore: Picture3.png, app.js, index.html
+"@ | Out-File -FilePath .gitignore -Encoding utf8 -NoNewline
